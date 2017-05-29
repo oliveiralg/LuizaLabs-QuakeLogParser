@@ -23,8 +23,8 @@ public class Kill implements Serializable {
     return player;
   }
 
-  public void setPlayer(Player players) {
-    this.player = players;
+  public void setPlayer(Player player) {
+    this.player = player;
   }
 
   public int getQtde() {

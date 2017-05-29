@@ -3,7 +3,7 @@ package bean;
 import java.io.Serializable;
 
 /*
- * Classe objeto de Partida
+ * Classe objeto de Player
  */
 public class Player implements Serializable {
   private static final long serialVersionUID = 1L;
