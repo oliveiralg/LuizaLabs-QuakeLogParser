@@ -1,4 +1,4 @@
-package com.luizalabs.cache.controller;
+package com.luizalabs.spring.dao;
 
 import java.util.Properties;
 

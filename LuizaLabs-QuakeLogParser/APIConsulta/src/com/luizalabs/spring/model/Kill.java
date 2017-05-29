@@ -15,7 +15,7 @@ import javax.persistence.Table;
  * Classe entity/objeto de Thumbnail
  */
 @Entity
-@Table(name = "Partida")
+@Table(name = "Kill")
 public class Kill implements Serializable {
   private static final long serialVersionUID = 1L;
   @Id
@@ -23,7 +23,7 @@ public class Kill implements Serializable {
   private int id;
   @OneToOne(cascade = CascadeType.ALL)
   @OrderColumn(name = "id")
-  private Player players;
+  private Player player;
   private int qtde;
 
   public int getId() {
@@ -34,12 +34,12 @@ public class Kill implements Serializable {
     this.id = id;
   }
 
-  public Player getPlayers() {
-    return players;
+  public Player getPlayer() {
+    return player;
   }
 
-  public void setPlayers(Player players) {
-    this.players = players;
+  public void setPlayer(Player players) {
+    this.player = players;
   }
 
   public int getQtde() {

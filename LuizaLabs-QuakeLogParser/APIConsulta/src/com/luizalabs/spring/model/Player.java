@@ -9,10 +9,10 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /*
- * Classe entity/objeto de Thumbnail
+ * Classe entity/objeto de Player
  */
 @Entity
-@Table(name = "Partida")
+@Table(name = "Player")
 public class Player implements Serializable {
   private static final long serialVersionUID = 1L;
   @Id
