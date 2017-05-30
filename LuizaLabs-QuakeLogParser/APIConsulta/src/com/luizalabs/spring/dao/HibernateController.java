@@ -14,37 +14,38 @@ import org.hibernate.service.ServiceRegistryBuilder;
  */
 public class HibernateController {
 
-	private static SessionFactory sessionFactory = null;
-	private static ServiceRegistry serviceRegistry = null;
+  private static SessionFactory sessionFactory = null;
+  private static ServiceRegistry serviceRegistry = null;
 
-	public static SessionFactory configureSessionFactory() throws HibernateException {
-		Configuration configuration = new Configuration();
-		configuration.configure();
+  public static SessionFactory configureSessionFactory() throws HibernateException {
+    Configuration configuration = new Configuration();
+    configuration.configure();
 
-		Properties properties = configuration.getProperties();
+    Properties properties = configuration.getProperties();
 
-		if (serviceRegistry == null)
-			serviceRegistry = new ServiceRegistryBuilder().applySettings(properties).buildServiceRegistry();
-		if (sessionFactory == null)
-			sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+    if (serviceRegistry == null)
+      serviceRegistry =
+          new ServiceRegistryBuilder().applySettings(properties).buildServiceRegistry();
+    if (sessionFactory == null)
+      sessionFactory = configuration.buildSessionFactory(serviceRegistry);
 
-		return sessionFactory;
-	}
+    return sessionFactory;
+  }
 
-	public static SessionFactory getSessionFactory() {
-		return sessionFactory;
-	}
+  public static SessionFactory getSessionFactory() {
+    return sessionFactory;
+  }
 
-	public static void setSessionFactory(SessionFactory sessionFactory) {
-		HibernateController.sessionFactory = sessionFactory;
-	}
+  public static void setSessionFactory(SessionFactory sessionFactory) {
+    HibernateController.sessionFactory = sessionFactory;
+  }
 
-	public static ServiceRegistry getServiceRegistry() {
-		return serviceRegistry;
-	}
+  public static ServiceRegistry getServiceRegistry() {
+    return serviceRegistry;
+  }
 
-	public static void setServiceRegistry(ServiceRegistry serviceRegistry) {
-		HibernateController.serviceRegistry = serviceRegistry;
-	}
+  public static void setServiceRegistry(ServiceRegistry serviceRegistry) {
+    HibernateController.serviceRegistry = serviceRegistry;
+  }
 
 }

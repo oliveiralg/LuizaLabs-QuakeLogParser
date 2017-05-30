@@ -147,14 +147,9 @@ public class PartidaDAO {
     try {
       session = HibernateController.getSessionFactory().openSession();
 
-      Criteria cr =  session.createCriteria(Partida.class).createAlias("players", "p")
+      Criteria cr = session.createCriteria(Partida.class).createAlias("players", "p")
           .add(Restrictions.eq("p.nome", nome));
       partidaList = cr.list();
-      /*
-       * partidaList = session.createQuery("from Partida p inner join Partida_Player pp on " +
-       * "pp.Partida_id = p.id inner join Player pl on pl.id = pp.players_id " + "where nome = '" +
-       * nome + "'").list();
-       */
 
     } catch (Exception ex) {
       ex.printStackTrace();

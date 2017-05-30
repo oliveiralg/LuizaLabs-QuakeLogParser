@@ -12,7 +12,7 @@ import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 
 /*
- * Classe entity/objeto de Thumbnail
+ * Classe entity/objeto de Kill
  */
 @Entity
 @Table(name = "Kill")

@@ -18,8 +18,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import com.google.gson.Gson;
-
 import bean.Kill;
 import bean.Partida;
 import bean.Player;
@@ -35,6 +33,7 @@ public class LogParser {
           "Para usar o parser, passe o caminho do arquivo por parametro. Ex: java LogParser \"C:\\quake.log\"");
     } else {
       try {
+        log.debug("Abrindo o arquivo!");
         FileInputStream fstream = new FileInputStream(args[0]);
         DataInputStream in = new DataInputStream(fstream);
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
@@ -46,22 +45,24 @@ public class LogParser {
         int totalKills = 0;
         Partida partida = null;
 
+        log.debug("Arquivo aberto. Pegando suas linhas para fazer o parse!");
         while ((strLine = br.readLine()) != null) {
-          // Inicio de um jogo
+          log.debug("Encontrado inicio de jogo!"); // Inicio de um jogo
           if (strLine.indexOf("InitGame") > -1) {
             // Não finalizou a partida com ShutdownGame
             if (partida != null) {
+              log.debug("Partida anterior não foi finalizado graciosamente!");
               listaPlayers = new ArrayList<Player>();
               listaKills = new ArrayList<Kill>();
-
+              log.debug("Loop na lista de kills para adicionar players e kills ao objeto partida");
               for (Map.Entry<String, Integer> entry : kills.entrySet()) {
                 if (!entry.getKey().equals("<world>")) {
-                  // Adiciona o jogador
+                  log.debug("Adicionando player");// Adiciona o jogador
                   Player player = new Player();
                   player.setNome(entry.getKey());
                   listaPlayers.add(player);
 
-                  // Adiciona suas kills
+                  log.debug("Adicionando suas kills");// Adiciona suas kills
                   Kill kill = new Kill();
                   kill.setPlayer(player);
                   kill.setQtde(entry.getValue());
@@ -71,16 +72,19 @@ public class LogParser {
 
               partida.setPlayers(listaPlayers.toArray(new Player[0]));
               partida.setKills(listaKills.toArray(new Kill[0]));
+              log.debug("Setando o total de kills");
               partida.setTotalKills(totalKills);
+              log.debug("Adicionando a partida na lista");
               listaPartidas.add(partida);
             }
+            log.debug("Resetando variáveis para nova partida!");
             partida = new Partida();
             totalKills = 0;
             kills = new HashMap<String, Integer>();
           }
           // Player
           else if (strLine.indexOf("ClientUserinfoChanged") > -1) {
-            // Pega o nome do player
+            log.debug("Novo player entrou na partida!");// Pega o nome do player
             Matcher m = Pattern.compile("n\\\\(.*?)\\\\t").matcher(strLine);
             if (m.find()) {
               String player = m.group(1).trim();
@@ -92,6 +96,7 @@ public class LogParser {
           }
           // Kill
           else if (strLine.indexOf("Kill") > -1) {
+            log.debug("Nova morte aconteceu!");
             totalKills++;
 
             // Usa regexp para pegar quem matou e foi morto
@@ -101,12 +106,14 @@ public class LogParser {
               String matou = m.group(1).trim();
               String morto = m.group(2).trim();
               if (matou.equals("<world>") || matou.equals(morto)) {
+                log.debug("Suicídio ou morto pelo mapa! Perde frag.");
                 if (kills.containsKey(morto)) {
                   kills.replace(morto, kills.get(morto) - 1);
                 } else {
                   kills.put(morto, -1);
                 }
               } else {
+                log.debug("Computando morte para player!");
                 if (kills.containsKey(matou)) {
                   kills.replace(matou, kills.get(matou) + 1);
                 } else {
@@ -117,17 +124,19 @@ public class LogParser {
           }
           // Fim da partida
           else if (strLine.indexOf("ShutdownGame") > -1) {
+            log.debug("Partida anterior encerrada!");
             listaPlayers = new ArrayList<Player>();
             listaKills = new ArrayList<Kill>();
 
+            log.debug("Loop na lista de kills para adicionar players e kills ao objeto partida");
             for (Map.Entry<String, Integer> entry : kills.entrySet()) {
               if (!entry.getKey().equals("<world>")) {
-                // Adiciona o jogador
+                log.debug("Adicionando player");// Adiciona o jogador
                 Player player = new Player();
                 player.setNome(entry.getKey());
                 listaPlayers.add(player);
 
-                // Adiciona suas kills
+                log.debug("Adicionando suas kills");// Adiciona suas kills
                 Kill kill = new Kill();
                 kill.setPlayer(player);
                 kill.setQtde(entry.getValue());
@@ -137,8 +146,11 @@ public class LogParser {
 
             partida.setPlayers(listaPlayers.toArray(new Player[0]));
             partida.setKills(listaKills.toArray(new Kill[0]));
+            log.debug("Setando o total de kills");
             partida.setTotalKills(totalKills);
+            log.debug("Adicionando a partida na lista");
             listaPartidas.add(partida);
+            log.debug("Resetando variáveis para nova partida!");
             partida = null;
             totalKills = 0;
             kills = new HashMap<String, Integer>();
@@ -146,18 +158,15 @@ public class LogParser {
         }
         br.close();
 
-        Gson gson = new Gson();
-        String json = gson.toJson(listaPartidas);
-        
+        log.debug("Passando lista para WebService REST persistir em banco!");
         RestTemplate rest = new RestTemplate();
         String url = "http://localhost:8080/partidas";
         @SuppressWarnings("rawtypes")
         ResponseEntity<List> response = rest.postForEntity(url, listaPartidas, List.class);
-        System.out.println(response.getBody()); 
-        
-        System.out.println(json);
+        log.debug("Mostrando retorno do WebService.");
+        System.out.println(response.getBody());
       } catch (IOException e) {
-        log.info("Arquivo " + args[0] + " não encontrado!");
+        log.error("Arquivo " + args[0] + " não encontrado!");
       }
     }
   }

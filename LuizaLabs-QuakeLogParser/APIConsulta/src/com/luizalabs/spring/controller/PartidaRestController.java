@@ -43,7 +43,7 @@ public class PartidaRestController {
       return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-  
+
   /*
    * Pesquisa partidas por player
    */
@@ -54,7 +54,8 @@ public class PartidaRestController {
     try {
       List<Partida> partidas = PartidaService.buscarPlayer(nome);
       if (partidas == null) {
-        return new ResponseEntity("Partida não encontrada com player = " + nome, HttpStatus.NOT_FOUND);
+        return new ResponseEntity("Partida não encontrada com player = " + nome,
+            HttpStatus.NOT_FOUND);
       } else {
         return new ResponseEntity<List<Partida>>(partidas, HttpStatus.OK);
       }
@@ -103,7 +104,7 @@ public class PartidaRestController {
   }
 
   /*
-   * Remove personagem do bookmark
+   * Remove partida
    */
   @SuppressWarnings({"rawtypes", "unchecked"})
   @GetMapping("/removerpartida/{id}")
@@ -118,7 +119,7 @@ public class PartidaRestController {
   }
 
   /*
-   * Lista personagens do bookmark
+   * Lista todas partidas
    */
   @SuppressWarnings({"rawtypes", "unchecked"})
   @GetMapping("/listarpartidas")

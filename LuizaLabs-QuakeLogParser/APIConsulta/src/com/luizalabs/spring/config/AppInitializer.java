@@ -7,21 +7,21 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
  */
 public class AppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Override
-	protected Class[] getRootConfigClasses() {
-		return new Class[] { AppConfig.class };
-	}
+  @SuppressWarnings({"rawtypes", "unchecked"})
+  @Override
+  protected Class[] getRootConfigClasses() {
+    return new Class[] {AppConfig.class};
+  }
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Override
-	protected Class[] getServletConfigClasses() {
-		return null;
-	}
+  @SuppressWarnings({"rawtypes", "unchecked"})
+  @Override
+  protected Class[] getServletConfigClasses() {
+    return null;
+  }
 
-	@Override
-	protected String[] getServletMappings() {
-		return new String[] { "/" };
-	}
+  @Override
+  protected String[] getServletMappings() {
+    return new String[] {"/"};
+  }
 
 }
