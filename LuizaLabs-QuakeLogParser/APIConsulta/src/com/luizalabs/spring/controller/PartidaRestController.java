@@ -25,7 +25,7 @@ public class PartidaRestController {
   private static final Logger log = LoggerFactory.getLogger(PartidaRestController.class);
 
   /*
-   * Pesquisa personagem
+   * Pesquisa partidas
    */
   @SuppressWarnings({"rawtypes", "unchecked"})
   @GetMapping("/partida/{id}")
@@ -37,6 +37,26 @@ public class PartidaRestController {
         return new ResponseEntity("Partida não encontrada com id = " + id, HttpStatus.NOT_FOUND);
       } else {
         return new ResponseEntity<Partida>(partida, HttpStatus.OK);
+      }
+    } catch (Exception e) {
+      log.error(e.getMessage());
+      return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+  
+  /*
+   * Pesquisa partidas por player
+   */
+  @SuppressWarnings({"rawtypes", "unchecked"})
+  @GetMapping("/player/{nome}")
+  public ResponseEntity<List<Partida>> buscarPartidaPlayer(@PathVariable("nome") String nome) {
+
+    try {
+      List<Partida> partidas = PartidaService.buscarPlayer(nome);
+      if (partidas == null) {
+        return new ResponseEntity("Partida não encontrada com player = " + nome, HttpStatus.NOT_FOUND);
+      } else {
+        return new ResponseEntity<List<Partida>>(partidas, HttpStatus.OK);
       }
     } catch (Exception e) {
       log.error(e.getMessage());

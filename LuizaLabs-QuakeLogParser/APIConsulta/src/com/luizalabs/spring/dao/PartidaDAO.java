@@ -133,4 +133,36 @@ public class PartidaDAO {
     }
     return partidaList;
   }
+
+  /*
+   * busca uma partida pelo player
+   */
+  @SuppressWarnings("unchecked")
+  public static List<Partida> getPartidaPlayer(String nome) {
+    // Configure the session factory
+    HibernateController.configureSessionFactory();
+
+    Session session = null;
+    List<Partida> partidaList = null;
+    try {
+      session = HibernateController.getSessionFactory().openSession();
+
+      Criteria cr =  session.createCriteria(Partida.class).createAlias("players", "p")
+          .add(Restrictions.eq("p.nome", nome));
+      partidaList = cr.list();
+      /*
+       * partidaList = session.createQuery("from Partida p inner join Partida_Player pp on " +
+       * "pp.Partida_id = p.id inner join Player pl on pl.id = pp.players_id " + "where nome = '" +
+       * nome + "'").list();
+       */
+
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    } finally {
+      if (session != null) {
+        session.close();
+      }
+    }
+    return partidaList;
+  }
 }

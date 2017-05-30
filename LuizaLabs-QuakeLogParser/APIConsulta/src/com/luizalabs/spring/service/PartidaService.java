@@ -18,12 +18,19 @@ public class PartidaService {
   private static final Logger log = LoggerFactory.getLogger(PartidaService.class);
 
   /*
-   * Busca partida no banco de dados Retorna Partida
+   * Busca partida no banco de dados 
+   * Retorna Partida
    */
   public static Partida buscar(int id) throws Exception {
     log.debug("Buscando partida por id = " + id);
     List<Partida> partidas = PartidaDAO.getPartida(id);
     return partidas.get(0);
+  }
+  
+  public static List<Partida> buscarPlayer(String nome) throws Exception {
+    log.debug("Buscando partida por player = " + nome);
+    List<Partida> partidas = PartidaDAO.getPartidaPlayer(nome);
+    return partidas;
   }
 
   public static List<Partida> listar() throws Exception {

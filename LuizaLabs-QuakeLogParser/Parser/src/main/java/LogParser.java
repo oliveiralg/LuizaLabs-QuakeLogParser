@@ -76,6 +76,7 @@ public class LogParser {
             }
             partida = new Partida();
             totalKills = 0;
+            kills = new HashMap<String, Integer>();
           }
           // Player
           else if (strLine.indexOf("ClientUserinfoChanged") > -1) {
@@ -139,6 +140,8 @@ public class LogParser {
             partida.setTotalKills(totalKills);
             listaPartidas.add(partida);
             partida = null;
+            totalKills = 0;
+            kills = new HashMap<String, Integer>();
           }
         }
         br.close();
