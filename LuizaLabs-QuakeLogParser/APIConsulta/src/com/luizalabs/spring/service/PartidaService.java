@@ -62,5 +62,13 @@ public class PartidaService {
     log.debug("Removendo partida id = " + id);
     PartidaDAO.removePartida(id);
   }
+  
+  /*
+   * Limpa o banco
+   */
+  public static void clean() throws Exception {
+    log.debug("Limpando o banco");
+    PartidaDAO.clean();
+  }
 
 }

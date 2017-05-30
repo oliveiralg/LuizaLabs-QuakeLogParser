@@ -12,7 +12,7 @@
 		<property name="connection.username"></property>
 		<property name="connection.password"></property>
 
-		<property name="hibernate.hbm2ddl.auto">update</property>
+		<property name="hibernate.hbm2ddl.auto">create</property>
 
 		<mapping class="com.luizalabs.spring.model.Partida" />
 		<mapping class="com.luizalabs.spring.model.Player" />

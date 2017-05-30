@@ -119,6 +119,21 @@ public class PartidaRestController {
   }
 
   /*
+   * Limpa o banco
+   */
+  @SuppressWarnings({"rawtypes", "unchecked"})
+  @GetMapping("/cleandatabase")
+  public ResponseEntity clean() {
+    try {
+      PartidaService.clean();
+      return new ResponseEntity(null, HttpStatus.OK);
+    } catch (Exception e) {
+      log.error(e.getMessage());
+      return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  /*
    * Lista todas partidas
    */
   @SuppressWarnings({"rawtypes", "unchecked"})

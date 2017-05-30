@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import bean.Kill;
@@ -147,10 +148,19 @@ public class Testes {
   }
 
   public static void main(String args[]) {
+    //Remove todos os registros do banco
+    RestTemplate rest = new RestTemplate();
+    String url = "http://localhost:8080/cleandatabase";
+    rest.getForEntity(url, null);
+    
     // Carrega arquivo para iniciar o banco;
     CarregarArquivo();
     // Verifica se o arquivo foi carregado com sucesso buscando todas as partidas
-
+    url = "http://localhost:8080/partidas";
+    @SuppressWarnings("rawtypes")
+    ResponseEntity<List> response = rest.getForEntity(url, List.class);
+       
+    System.out.println(response.getBody());
     // Pega o id e faz a busca pelo id agora
 
     // Faz a busca por player

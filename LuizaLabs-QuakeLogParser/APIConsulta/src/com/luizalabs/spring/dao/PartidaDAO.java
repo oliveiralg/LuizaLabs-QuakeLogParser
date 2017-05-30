@@ -86,6 +86,31 @@ public class PartidaDAO {
   }
 
   /*
+   * Limpa o banco
+   */
+  public static void clean() {
+    // Configure the session factory
+    HibernateController.configureSessionFactory();
+
+    Session session = null;
+    try {
+      session = HibernateController.getSessionFactory().openSession();
+
+      Query q = session.createQuery("delete Partida");
+      q.executeUpdate();
+
+      session.flush();
+
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    } finally {
+      if (session != null) {
+        session.close();
+      }
+    }
+  }
+
+  /*
    * lista todas as partidas
    */
   @SuppressWarnings("unchecked")
