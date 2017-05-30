@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+html {
+	font-size: 14px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+</style>
+<title></title>
+<link rel="stylesheet" href="./css/kendo.common-material.min.css" />
+<link rel="stylesheet" href="./css/kendo.material.min.css" />
+<link rel="stylesheet" href="./css/jquery.json-viewer.css" />
+
+<style type="text/css">
+div#json-renderer {
+	border: 1px solid #aaa;
+	padding: 0.5em 1.5em;
+	width: 90%;
+	position: relative;
+}
+</style>
+
+<script src="./js/jquery-3.1.1.min.js"></script>
+<script src="./js/kendo.all.min.js"></script>
+<script src="./js/kendo.culture.pt-BR.min.js"></script>
+<script src="./js/jquery.json-viewer.js"></script>
+
+<script type="text/javascript">
+	$(document)
+			.ready(
+					function() {
+
+						function detailInit(e) {
+							var detailRow = e.detailRow;
+							$("<div id='tabstrip"+e.data.id+"'></div>")
+									.appendTo(e.detailCell);
+
+							var tabStripElement = detailRow.find(
+									"#tabstrip" + e.data.id).kendoTabStrip({
+								animation : {
+									open : {
+										effects : "fadeIn"
+									}
+								}
+							});
+
+							var tabstrip = tabStripElement
+									.data("kendoTabStrip");
+
+							tabstrip
+									.append({
+										text : "Players",
+										content : "<div id='players"
+												+ e.data.id
+												+ "' style='position: static, height: 100%'></div>"
+									});
+							tabstrip
+									.append({
+										text : "Kills",
+										content : "<div id='kills"
+												+ e.data.id
+												+ "' style='position: static, height: 100%'></div>"
+									});
+
+							tabstrip.select(0);
+
+							var dataSourcePlayers = new kendo.data.DataSource({
+								data : e.data.players
+							});
+
+							$("#players" + e.data.id).kendoGrid({
+								dataSource : dataSourcePlayers,
+								sortable : false,
+								pageable : false,
+								columns : [ {
+									field : "player",
+									title : "Nome",
+									width : 200
+								} ]
+							});
+
+							var dataSourceKills = new kendo.data.DataSource({
+								data : e.data.kills,
+								schema : {
+									model : {
+										fields : {
+											player : {
+												type : "string"
+											},
+											qtde : {
+												type : "number"
+											}
+										}
+									}
+								}
+							});
+
+							$("#kills" + e.data.id).kendoGrid({
+								dataSource : dataSourceKills,
+								sortable : false,
+								pageable : false,
+								columns : [ {
+									field : "player",
+									title : "Nome",
+									width : 200
+								}, {
+									field : "qtde",
+									title : "Qtde Total",
+									width : 100
+								} ]
+							});
+						}
+
+						function CarregarGrade(partidas) {
+							if (partidas != undefined) {
+
+								$("#gridPartidas").empty();
+								$("#gridPartidas").kendoGrid({
+									dataSource : {
+										data : partidas,
+										schema : {
+											model : {
+												fields : {
+													id : {
+														type : "number"
+													},
+													totalKills : {
+														type : "number"
+													}
+												}
+											}
+										}
+									},
+									scrollable : true,
+									sortable : true,
+									filterable : true,
+									selectable : true,
+									detailInit : detailInit,
+									columns : [ {
+										field : "id",
+										title : "Codigo",
+										width : "100px"
+									}, {
+										field : "totalKills",
+										title : "Total Kills",
+										width : "150px"
+									} ]
+								});
+							}
+						}
+
+						function ProcessaRetorno(dados) {
+							var listaPartidas = [];
+							for (var i = 0; i < dados.length; i++) {
+								var listaKills = [];
+								for (var k = 0; k < dados[i].kills.length; k++) {
+									listaKills.push({
+										player : dados[i].kills[k].player.nome,
+										qtde : dados[i].kills[k].qtde
+									})
+								}
+								var listaPlayers = [];
+								for (var k = 0; k < dados[i].players.length; k++) {
+									listaPlayers.push({
+										player : dados[i].players[k].nome
+									})
+								}
+
+								var partida = {
+									id : dados[i].id,
+									totalKills : dados[i].totalKills,
+									players : listaPlayers,
+									kills : listaKills
+								};
+								listaPartidas.push(partida);
+							}
+							return listaPartidas;
+						}
+
+						//Busca partidas do player
+						$("#btnBuscar").click(function(event) {
+							var partidas;
+							var nome = $("#Nome").val();
+							$.ajax({
+								url : "http://localhost:8080/player/" + nome
+							}).then(function(retorno) {
+								try {
+									partidas = ProcessaRetorno(retorno);
+								} catch (error) {
+									console.log("Cannot eval JSON: " + error);
+								}
+								CarregarGrade(partidas);
+							});
+						});
+
+						function BuscarTodas() {
+							//Carrega as partidas guardadas
+							$.ajax({
+								url : "http://localhost:8080/listarpartidas/"
+							}).then(function(retorno) {
+								var partidas;
+								try {
+									partidas = ProcessaRetorno(retorno);
+								} catch (error) {
+									console.log("Cannot eval JSON: " + error);
+								}
+								CarregarGrade(partidas);
+							});
+						}
+						
+						//Busca partidas do player
+						$("#btnLimpar").click(function(event) {
+							$("#Nome").val("");
+							BuscarTodas();
+						});
+						
+						BuscarTodas();
+					});
+</script>
+</head>
+<body>
+	<div>
+		Player: <input type="text" id="Nome" />
+		<button type="submit" id="btnBuscar">Buscar</button>
+		&nbsp;&nbsp;&nbsp;
+		<button type="submit" id="btnLimpar">Limpar</button>
+	</div>
+	<br />
+	<table style="width: 100%">
+		<tr>
+			<td width="100%" valign="top">Partidas: <br />
+			</td>
+		</tr>
+		<tr>
+			<td width="100%" valign="top">
+				<div id="gridPartidas" style="position: relative;"></div>
+			</td>
+		</tr>
+	</table>
+
+</body>
+</html>
