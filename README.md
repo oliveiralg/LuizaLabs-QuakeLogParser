@@ -40,11 +40,6 @@ Para usar o parser, passe o caminho do arquivo por parametro. Ex: java LogParser
 3. Testes
 Aplicativo java para efetuar teste unitário nos projetos LogParser e APIConsulta
 Os seguintes teste serão executados
-1- Remove todos os registros do banco
-2- Carrega arquivo para iniciar o banco
-3- Busca todas as partidas
-4- Faz a busca pelo id
-5- Faz a busca por player
-6- Remove o registro
-7- Verifica se banco foi limpo buscando todas as partidas
+
+1- Remove todos os registros do banco; 2- Carrega arquivo para iniciar o banco; 3- Busca todas as partidas; 4- Faz a busca pelo id; 5- Faz a busca por player; 6- Remove o registro; 7- Verifica se banco foi limpo buscando todas as partidas
 
